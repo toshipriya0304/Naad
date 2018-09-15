@@ -1,15 +1,110 @@
-jQuery(document).ready(function( $ ) {
+$("#regsolo").hide(500);
+$("#reggroup").hide(500);
+function display_form(){
+  if($("#type").val() == ""){
+    $("#regsolo").hide(500);
+    $("#reggroup").hide(500);
+  }
+  else if($("#type").val() == "solo"){
+    $("#regsolo").show(500);
+    $("#reggroup").hide(500);
+  }
+  else if($("#type").val() == "group"){
+    $("#regsolo").hide(500);
+    $("#reggroup").show(500);
+  }
+  else{
+    $("#regsolo").hide(500);
+    $("#reggroup").hide(500);
+  }
+}
+function register() {
+  var Name = $('#Name').val();
+  var School_College = $('#School_College').val();
+  var ContactNum = $('#ContactNum').val();
+  var Email = $('#Email').val();
+  var Branch = $('#Branch').val();
+  var Gender = $('#Gender').val();
+  var CollegeRoll = $('#CollegeRoll').val();
+
+
+  var patt = /[A-Za-z \.]+/g;
+  if (patt.test(Name) == false) {
+    alert("Incorrect Name Entered");
+    return false;
+  }
+
+  patt = /[A-Za-z ,\-]+/g;
+  if (patt.test(School_College) == false) {
+    alert("Incorrect School/College Entered");
+    return false;
+  }
+
+  patt = /[0-9]{10}/g;
+  if (patt.test(ContactNum) == false) {
+    alert("Incorrect Phone Number Entered");
+    return false;
+  }
+
+
+  patt = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  if (patt.test(Email) == false) {
+    alert("Incorrect Email Entered");
+    return false;
+  }
+
+  var patt = /[A-Za-z \.]+/g;
+  if (patt.test(Branch) == false) {
+    alert("Incorrect Branch Entered");
+    return false;
+  }
+
+  if (CollegeRoll.length == 0) {
+    alert("Incorrect Rollno Entered");
+    return false;
+  }
+
+
+  if (Gender != "Male" && Gender != "Female") {
+    alert("Incorrect Gender Entered");
+    return false;
+  }
+  
+  $("#regbutton").html("Registering..");
+
+  var dataString = 'Name='+ Name + '&School_College='+ School_College + '&ContactNum='+ ContactNum + '&Email='+ Email + '&Branch='+ Branch+ '&Gender='+ Gender+ '&CollegeRoll='+ CollegeRoll;
+  $.ajax({
+    type: "POST",
+    url: "api/formsql.php",
+    data: dataString,
+    cache: false,
+    success: function(result){
+      if(result.includes("You have registered successfully!")){
+        document.getElementById("regform").innerHTML = result;
+      }
+      else{
+        $("#regbutton").html("Register");
+        alert("An unknown error occured. Please try again later.")
+      }
+    }
+  });
+}
+
+
+
+jQuery(document).ready(function ($) {
 
   // Back to top button
-  $(window).scroll(function() {
+  $(window).scroll(function () {
     if ($(this).scrollTop() > 100) {
       $('.back-to-top').fadeIn('slow');
     } else {
       $('.back-to-top').fadeOut('slow');
     }
   });
-  $('.back-to-top').click(function(){
-    $('html, body').animate({scrollTop : 0},1500, 'easeInOutExpo');
+  $('.back-to-top').click(function () {
+    $('html, body').animate({ scrollTop: 0 }, 1500, 'easeInOutExpo');
     return false;
   });
 
@@ -38,19 +133,19 @@ jQuery(document).ready(function( $ ) {
     $('body').append('<div id="mobile-body-overly"></div>');
     $('#mobile-nav').find('.menu-has-children').prepend('<i class="fa fa-chevron-down"></i>');
 
-    $(document).on('click', '.menu-has-children i', function(e) {
+    $(document).on('click', '.menu-has-children i', function (e) {
       $(this).next().toggleClass('menu-item-active');
       $(this).nextAll('ul').eq(0).slideToggle();
       $(this).toggleClass("fa-chevron-up fa-chevron-down");
     });
 
-    $(document).on('click', '#mobile-nav-toggle', function(e) {
+    $(document).on('click', '#mobile-nav-toggle', function (e) {
       $('body').toggleClass('mobile-nav-active');
       $('#mobile-nav-toggle i').toggleClass('fa-times fa-bars');
       $('#mobile-body-overly').toggle();
     });
 
-    $(document).click(function(e) {
+    $(document).click(function (e) {
       var container = $("#mobile-nav, #mobile-nav-toggle");
       if (!container.is(e.target) && container.has(e.target).length === 0) {
         if ($('body').hasClass('mobile-nav-active')) {
@@ -65,7 +160,7 @@ jQuery(document).ready(function( $ ) {
   }
 
   // Smooth scroll for the menu and links with .scrollto classes
-  $('.nav-menu a, #mobile-nav a, .scrollto').on('click', function() {
+  $('.nav-menu a, #mobile-nav a, .scrollto').on('click', function () {
     if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
       var target = $(this.hash);
       if (target.length) {
@@ -74,7 +169,7 @@ jQuery(document).ready(function( $ ) {
         if ($('#header').length) {
           top_space = $('#header').outerHeight();
 
-          if( ! $('#header').hasClass('header-fixed') ) {
+          if (!$('#header').hasClass('header-fixed')) {
             top_space = top_space - 20;
           }
         }
@@ -99,7 +194,7 @@ jQuery(document).ready(function( $ ) {
   });
 
   // Header scroll class
-  $(window).scroll(function() {
+  $(window).scroll(function () {
     if ($(this).scrollTop() > 100) {
       $('#header').addClass('header-scrolled');
     } else {
@@ -110,29 +205,29 @@ jQuery(document).ready(function( $ ) {
   // Intro carousel
   var introCarousel = $(".carousel");
   var introCarouselIndicators = $(".carousel-indicators");
-  introCarousel.find(".carousel-inner").children(".carousel-item").each(function(index) {
+  introCarousel.find(".carousel-inner").children(".carousel-item").each(function (index) {
     (index === 0) ?
-    introCarouselIndicators.append("<li data-target='#introCarousel' data-slide-to='" + index + "' class='active'></li>") :
-    introCarouselIndicators.append("<li data-target='#introCarousel' data-slide-to='" + index + "'></li>");
+      introCarouselIndicators.append("<li data-target='#introCarousel' data-slide-to='" + index + "' class='active'></li>") :
+      introCarouselIndicators.append("<li data-target='#introCarousel' data-slide-to='" + index + "'></li>");
 
-    $(this).css("background-image", "url('" + $(this).children('.carousel-background').children('img').attr('src') +"')");
+    $(this).css("background-image", "url('" + $(this).children('.carousel-background').children('img').attr('src') + "')");
     $(this).children('.carousel-background').remove();
   });
 
   $(".carousel").swipe({
-    swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
+    swipe: function (event, direction, distance, duration, fingerCount, fingerData) {
       if (direction == 'left') $(this).carousel('next');
       if (direction == 'right') $(this).carousel('prev');
     },
-    allowPageScroll:"vertical"
+    allowPageScroll: "vertical"
   });
 
   // Skills section
-  $('#skills').waypoint(function() {
-    $('.progress .progress-bar').each(function() {
+  $('#skills').waypoint(function () {
+    $('.progress .progress-bar').each(function () {
       $(this).css("width", $(this).attr("aria-valuenow") + '%');
     });
-  }, { offset: '80%'} );
+  }, { offset: '80%' });
 
   // jQuery counterUp (used in Facts section)
   $('[data-toggle="counter-up"]').counterUp({
@@ -146,7 +241,7 @@ jQuery(document).ready(function( $ ) {
     layoutMode: 'fitRows'
   });
 
-  $('#portfolio-flters li').on( 'click', function() {
+  $('#portfolio-flters li').on('click', function () {
     $("#portfolio-flters li").removeClass('filter-active');
     $(this).addClass('filter-active');
 
@@ -158,7 +253,8 @@ jQuery(document).ready(function( $ ) {
     autoplay: true,
     dots: true,
     loop: true,
-    responsive: { 0: { items: 2 }, 768: { items: 4 }, 900: { items: 6 }
+    responsive: {
+      0: { items: 2 }, 768: { items: 4 }, 900: { items: 6 }
     }
   });
 
@@ -171,3 +267,5 @@ jQuery(document).ready(function( $ ) {
   });
 
 });
+
+
