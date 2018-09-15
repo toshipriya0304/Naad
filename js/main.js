@@ -92,6 +92,76 @@ function register() {
 }
 
 
+function groupreg() {
+  var eventList = [];
+  var Email = $('#gEmail').val();
+  var regid = $('#gregid').val();
+  var num = $('#gnum').val();
+
+  if($("#gswaranjali").is(":checked")){
+    eventList.push("swaranjali");
+  }
+  if($("#gtarang").is(":checked")){
+    eventList.push("tarang");
+  }
+  if($("#gsurealsymphony").is(":checked")){
+    eventList.push("surealsymphony");
+  }
+  if($("#gmaati").is(":checked")){
+    eventList.push("maati");
+  }
+  if($("#gjhankaar").is(":checked")){
+    eventList.push("jhankaar");
+  }
+
+  var patt = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  if (patt.test(Email) == false) {
+    alert("Incorrect Email Entered");
+    return false;
+  }
+
+
+
+  if (patt.length == 0) {
+    alert("Incorrect Registration Id Entered");
+    return false;
+  }
+
+  patt = /[2-8]{1}/;
+
+  if (patt.test(num) == false) {
+    alert("Minimum 2 and Maximum 8 group members allowed.");
+    return false;
+  }
+
+  if (eventList.length == 0) {
+    alert("Please select at least 1 event.");
+    return false;
+  }
+  
+  $("#gregbutton").html("Registering..");
+
+  var dataString = 'num='+num+'&eventList='+eventList+'&regid='+regid+'&Email='+Email;
+  $.ajax({
+    type: "POST",
+    url: "api/groupevent.php",
+    data: dataString,
+    cache: false,
+    success: function(result){
+      alert(result);
+      /*if(result.includes("You have registered successfully!")){
+        document.getElementById("reggroup").innerHTML = result;
+      }
+      else{
+        $("#gregbutton").html("Register");
+        alert("An unknown error occured. Please try again later.")
+      }*/
+    }
+  });
+}
+
+
 
 jQuery(document).ready(function ($) {
 
