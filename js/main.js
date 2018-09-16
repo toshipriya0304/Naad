@@ -93,25 +93,15 @@ function register() {
 
 
 function groupreg() {
-  var eventList = [];
+  
   var Email = $('#gEmail').val();
   var regid = $('#gregid').val();
   var num = $('#gnum').val();
+  var event = $('input[name=gevent]:checked').val();
 
-  if($("#gswaranjali").is(":checked")){
-    eventList.push("swaranjali");
-  }
-  if($("#gtarang").is(":checked")){
-    eventList.push("tarang");
-  }
-  if($("#gsurealsymphony").is(":checked")){
-    eventList.push("surealsymphony");
-  }
-  if($("#gmaati").is(":checked")){
-    eventList.push("maati");
-  }
-  if($("#gjhankaar").is(":checked")){
-    eventList.push("jhankaar");
+  if(event == "" || event == undefined){
+    alert("Select an event to register");
+    return false;
   }
 
   var patt = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -121,9 +111,7 @@ function groupreg() {
     return false;
   }
 
-
-
-  if (patt.length == 0) {
+  if (regid.length == 0) {
     alert("Incorrect Registration Id Entered");
     return false;
   }
@@ -134,29 +122,28 @@ function groupreg() {
     alert("Minimum 2 and Maximum 8 group members allowed.");
     return false;
   }
-
-  if (eventList.length == 0) {
-    alert("Please select at least 1 event.");
-    return false;
-  }
   
   $("#gregbutton").html("Registering..");
 
-  var dataString = 'num='+num+'&eventList='+eventList+'&regid='+regid+'&Email='+Email;
+  var dataString = 'num='+num+'&event='+event+'&regid='+regid+'&Email='+Email;
   $.ajax({
     type: "POST",
     url: "api/groupevent.php",
     data: dataString,
     cache: false,
     success: function(result){
-      alert(result);
-      /*if(result.includes("You have registered successfully!")){
-        document.getElementById("reggroup").innerHTML = result;
+      if(result.includes("You have successfully registered")){
+        alert(result);
+        document.getElementById("gregid").value = "";
+        document.getElementById("gnum").value = "";
+        document.getElementById("gEmail").value = "";
+        document.getElementById("gevent").value = "";
+        
       }
       else{
         $("#gregbutton").html("Register");
-        alert("An unknown error occured. Please try again later.")
-      }*/
+        alert(result);
+      }
     }
   });
 }
