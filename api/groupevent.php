@@ -9,7 +9,7 @@ catch(Exception $e){
 
 
 
-$conn=mysqli_connect("localhost", "root", "", "naadreg");
+$conn=mysqli_connect("localhost", "dhwani", "dhwanibitmesra", "naadreg");
 
 
 if (!$conn)  
