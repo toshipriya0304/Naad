@@ -11,7 +11,7 @@ $Gender = $_POST['Gender'];
 $regid="";
 
 
-$conn=mysqli_connect("localhost", "root", "", "naadreg");
+$conn=mysqli_connect("localhost", "dhwani", "dhwanibitmesra", "naadreg");
 
 
 
