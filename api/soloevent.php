@@ -1,8 +1,12 @@
 <?php
+$id = "";
+try{
+    $id = explode("/", $_POST['regid'])[2] - 10000;
+}
+catch(Exception $e){
+    die("Incorrect regid entered");
+}
 
- // Fetching variables of the form which travels in URL
-$eventname = $_POST['eventname'];
-$regid = $_POST['regid'];
 
 
 $conn=mysqli_connect("localhost", "root", "", "naadreg");
@@ -12,14 +16,32 @@ if (!$conn)
    {
         die("Connection failed:".mysqli_connect_error());
    }
-$sql = "INSERT INTO eventsolo (eventname, regid) VALUES ('$eventname','$regid')";
 
-if (mysqli_query($conn, $sql))
- {
-    echo "<div style='height: 80vh; padding: 30vh 0vh; font-size: 30px;'>You have been registered to the event(s) of yoour choice!<br></div>";
+$sql = "SELECT * FROM newform WHERE id='".(string)$id."' AND Email='".$_POST['Email']."'";
+
+$result = mysqli_query($conn, $sql);
+
+$result = mysqli_num_rows($result);
+
+if($result > 0){
+    foreach(explode(",", $_POST['eventList']) as $event) {
+        $sql = "SELECT * FROM eventsolo WHERE eventname='$event' AND regid='$id'";
+        $result = mysqli_query($conn, $sql);
+        $result = mysqli_num_rows($result);
+        if($result > 0){
+
+        }
+        else{
+            $sql = "INSERT INTO eventsolo VALUES ('$event', '$id')";
+            if(!mysqli_query($conn, $sql)){
+                echo mysqli_error($conn);
+            }
+        }
+    }
+    echo "You have successfully registered for the specified events.";
 }
 else{
-    echo mysqli_error($conn);
+    echo "No such Registration Id/Email Id combination found.";
 }
-mysqli_close($conn);
+
 ?>

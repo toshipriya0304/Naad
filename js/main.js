@@ -85,7 +85,7 @@ function register() {
       }
       else{
         $("#regbutton").html("Register");
-        alert("An unknown error occured. Please try again later.")
+        alert("An unknown error occured. Please try again later.");
       }
     }
   });
@@ -161,6 +161,74 @@ function groupreg() {
   });
 }
 
+
+function soloreg() {
+  var eventList = [];
+  var Email = $('#sEmail').val();
+  var regid = $('#sregid').val();
+
+  if($("#sswaranjali").is(":checked")){
+    eventList.push("swaranjali");
+  }
+  if($("#starang").is(":checked")){
+    eventList.push("tarang");
+  }
+  if($("#ssurrealsymphony").is(":checked")){
+    eventList.push("surealsymphony");
+  }
+  if($("#smaati").is(":checked")){
+    eventList.push("maati");
+  }
+  if($("#sjhankaar").is(":checked")){
+    eventList.push("jhankaar");
+  }
+
+  var patt = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  if (patt.test(Email) == false) {
+    alert("Incorrect Email Entered");
+    return false;
+  }
+
+
+
+  if (regid.length == 0) {
+    alert("Incorrect Registration Id Entered");
+    return false;
+  }
+
+
+  if (eventList.length == 0) {
+    alert("Please select at least 1 event.");
+    return false;
+  }
+  
+  $("#gregbutton").html("Registering..");
+
+  var dataString = 'eventList='+eventList+'&regid='+regid+'&Email='+Email;
+  $.ajax({
+    type: "POST",
+    url: "api/soloevent.php",
+    data: dataString,
+    cache: false,
+    success: function(result){
+      if(result.includes("You have successfully registered for the specified events.")){
+        alert(result);
+        $('input[id=sswaranjali]').attr('checked', false);
+        $('input[id=starang]').attr('checked', false);
+        $('input[id=surrealsymphony]').attr('checked', false);
+        $('input[id=smaati]').attr('checked', false);
+        $('input[id=sjhankaar]').attr('checked', false);
+        document.getElementById("sregid").value = "";
+        document.getElementById("sEmail").value = "";
+      }
+      else{
+        $("#gregbutton").html("Register");
+        alert(result);
+      }
+    }
+  });
+}
 
 
 jQuery(document).ready(function ($) {
